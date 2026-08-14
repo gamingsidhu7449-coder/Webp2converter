@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free WebP converter online. Convert JPG to WebP, PNG to WebP, JPEG to WebP, and any image to WebP format instantly — fast, secure, no signup required.">
+<title>Free WebP Converter — Turn JPG & PNG Images into WebP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F6F1;
+    --panel:#FFFFFF;
+    --panel-2:#F1EFE6;
+    --border:#E4E1D4;
+    --ink:#15151A;
+    --ink-dim:#6B6963;
+    --primary:#2B4CFF;
+    --primary-dark:#1E3AD1;
+    --accent:#FF6A3D;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.6;}
+  h1,h2,h3{font-family:'Sora',sans-serif;margin:0;}
+  a{color:inherit;}
+  ::selection{background:var(--primary);color:#fff;}
+  :focus-visible{outline:2px solid var(--primary);outline-offset:2px;}
+
+  header{display:flex;justify-content:space-between;align-items:center;padding:22px 48px;border-bottom:1px solid var(--border);background:var(--panel);}
+  .logo{display:flex;align-items:center;gap:9px;text-decoration:none;font-family:'Sora',sans-serif;font-weight:700;font-size:19px;color:var(--ink);}
+  .logo .dot{color:var(--primary);}
+  header nav a{color:var(--ink-dim);text-decoration:none;font-size:14px;}
+
+  .hero{max-width:1140px;margin:0 auto;padding:64px 24px 20px;}
+  .hero-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:52px;align-items:center;}
+  .heading-box{
+    background:linear-gradient(135deg,#EEF1FF 0%,#FFEEE7 100%);
+    border:1px solid #E4DEF5;
+    border-radius:20px;
+    padding:36px 38px;
+    position:relative;
+    overflow:hidden;
+  }
+  .heading-box::before{
+    content:"";position:absolute;top:-40px;right:-40px;width:140px;height:140px;
+    border-radius:50%;background:var(--primary);opacity:0.08;
+  }
+  .heading-box::after{
+    content:"";position:absolute;bottom:-50px;left:-30px;width:120px;height:120px;
+    border-radius:50%;background:var(--accent);opacity:0.08;
+  }
+  .heading-box .eyebrow,.heading-box h1,.heading-box .sub{position:relative;z-index:1;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;color:var(--primary);font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px;font-weight:600;}
+  h1{font-size:46px;line-height:1.12;font-weight:800;letter-spacing:-0.02em;color:var(--ink);}
+  h1 .hl{color:var(--primary);}
+  .hero p.sub{color:var(--ink-dim);font-size:16px;margin-top:18px;max-width:440px;}
+
+  /* Signature: radial compression meter */
+  .meter-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    padding:28px;box-shadow:0 2px 0 var(--border);
+  }
+  .meter-top{display:flex;align-items:center;gap:24px;}
+  .ring-wrap{position:relative;width:120px;height:120px;flex-shrink:0;}
+  .ring-wrap svg{transform:rotate(-90deg);}
+  .ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring-label .pct{font-family:'Sora',sans-serif;font-weight:800;font-size:24px;color:var(--ink);}
+  .ring-label .txt{font-size:10.5px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;}
+  .meter-files{display:flex;flex-direction:column;gap:10px;}
+  .mf-row{display:flex;align-items:center;gap:10px;}
+  .mf-dot{width:8px;height:8px;border-radius:50%;}
+  .mf-dot.before{background:#C9C6B8;}
+  .mf-dot.after{background:var(--accent);}
+  .mf-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-dim);}
+  .mf-size{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink);font-weight:600;}
+  .meter-note{margin-top:20px;padding-top:18px;border-top:1px dashed var(--border);font-size:13px;color:var(--ink-dim);}
+
+  .tool-section{max-width:1140px;margin:52px auto 0;padding:0 24px;}
+  .tool-pointer{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-bottom:16px;
+  }
+  .tool-pointer span{
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:600;
+    color:var(--primary-dark);background:#EEF1FF;border:1px solid #D7DEFF;
+    padding:6px 14px;border-radius:20px;letter-spacing:0.02em;
+  }
+  .tool-box-wrap{
+    position:relative;border-radius:20px;padding:2.5px;
+    background:linear-gradient(135deg,var(--primary),var(--accent),var(--primary));
+    background-size:200% 200%;
+    animation:borderShift 6s ease infinite;
+  }
+  @keyframes borderShift{
+    0%,100%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+  }
+  .tool-box{background:var(--panel);border:none;border-radius:18px;padding:40px;box-shadow:0 12px 40px rgba(43,76,255,0.12);}
+  .upload-icon{
+    width:52px;height:52px;margin:0 auto 16px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--primary),#5B76FF);
+    border-radius:14px;
+  }
+  .upload-icon svg{width:26px;height:26px;}
+  .dropzone{border:1.5px dashed #CFCBBB;border-radius:12px;padding:38px 20px;text-align:center;background:var(--panel-2);cursor:pointer;transition:border-color .2s, background .2s, transform .2s;}
+  .dropzone:hover{border-color:var(--primary);transform:translateY(-1px);}
+  .dropzone.dragover{border-color:var(--primary);background:#EEF1FF;transform:scale(1.01);}
+  .dropzone p{color:var(--ink-dim);font-size:14.5px;margin:0 0 16px;}
+  #imageInput{display:none;}
+  button#convertBtn{background:var(--primary);color:#fff;border:none;padding:14px 30px;font-family:'Inter',sans-serif;font-weight:600;font-size:15px;border-radius:9px;cursor:pointer;transition:transform .15s ease, background .2s ease, box-shadow .2s ease;box-shadow:0 4px 16px rgba(43,76,255,0.3);}
+  button#convertBtn:hover{background:var(--primary-dark);transform:translateY(-2px);box-shadow:0 6px 22px rgba(43,76,255,0.4);}
+  button#convertBtn:disabled{opacity:0.6;cursor:default;transform:none;}
+  #result{margin-top:18px;}
+  .preview-row{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:18px;}
+  .preview-thumb{width:56px;height:56px;object-fit:cover;border-radius:8px;border:1px solid var(--border);}
+  .preview-info{text-align:left;}
+  .preview-info .fname{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink);}
+  .preview-info .fsize{font-size:12px;color:var(--ink-dim);}
+  .error-msg{color:#D6432E;font-size:13px;margin-top:10px;}
+  .result-row{display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;}
+
+  .download-btn{
+    display:inline-flex;align-items:center;gap:10px;
+    background:linear-gradient(135deg,var(--accent),#E8511F);
+    border:none;color:#fff;padding:12px 24px;border-radius:9px;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:14px;text-decoration:none;
+    box-shadow:0 4px 14px rgba(255,106,61,0.3);
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .download-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,106,61,0.42);}
+  .download-btn:active{transform:translateY(0);}
+  .download-btn::before{
+    content:"";width:14px;height:14px;background:#fff;
+    -webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>') center/contain no-repeat;
+    mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 21h16"/></svg>') center/contain no-repeat;
+  }
+  .size-compare{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-dim);}
+  .size-compare .new-size{color:var(--accent);font-weight:600;}
+  .trust-line{text-align:center;color:var(--ink-dim);font-size:13px;margin-top:22px;font-family:'JetBrains Mono',monospace;}
+
+  .content-section{max-width:1140px;margin:0 auto;padding:0 24px;}
+  .section-inner{padding:60px 0 0;}
+  .section-head{margin-bottom:30px;}
+  .section-head h2{font-size:29px;font-weight:700;letter-spacing:-0.01em;max-width:520px;color:var(--ink);}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;position:relative;}
+  .steps::before{
+    content:"";position:absolute;top:38px;left:16.5%;right:16.5%;height:2px;
+    background:repeating-linear-gradient(90deg,#D7D3C4 0,#D7D3C4 6px,transparent 6px,transparent 12px);
+    z-index:0;
+  }
+  .step{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:26px 22px;
+    position:relative;z-index:1;margin:0 10px;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .step:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(43,76,255,0.1);border-color:#D7DEFF;}
+  .step .num{
+    width:40px;height:40px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Sora',sans-serif;font-weight:800;font-size:16px;color:#fff;
+    margin-bottom:16px;
+  }
+  .step:nth-child(1) .num{background:linear-gradient(135deg,var(--primary),#5B76FF);}
+  .step:nth-child(2) .num{background:linear-gradient(135deg,#7A5CFF,var(--primary));}
+  .step:nth-child(3) .num{background:linear-gradient(135deg,var(--accent),#E8511F);}
+  .step h4{font-weight:700;font-size:16.5px;margin-bottom:6px;}
+  .step p{color:var(--ink-dim);font-size:13.5px;margin:0;}
+
+  .feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .feature-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px;
+    position:relative;overflow:hidden;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,0.07);}
+  .feature-card::after{
+    content:"";position:absolute;top:0;right:0;width:80px;height:80px;
+    border-radius:50%;opacity:0.08;transform:translate(25%,-35%);
+  }
+  .feature-card:nth-child(1)::after{background:var(--primary);}
+  .feature-card:nth-child(2)::after{background:var(--accent);}
+  .feature-card:nth-child(3)::after{background:#7A5CFF;}
+  .feature-card:nth-child(4)::after{background:#14B87A;}
+  .feature-icon{
+    width:44px;height:44px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;margin-bottom:14px;
+    position:relative;z-index:1;
+  }
+  .feature-card:nth-child(1) .feature-icon{background:#EEF1FF;}
+  .feature-card:nth-child(2) .feature-icon{background:#FFEEE7;}
+  .feature-card:nth-child(3) .feature-icon{background:#F1EDFF;}
+  .feature-card:nth-child(4) .feature-icon{background:#E7F9F0;}
+  .feature-icon svg{width:22px;height:22px;}
+  .feature-card h4{font-weight:700;font-size:16.5px;margin-bottom:7px;position:relative;z-index:1;}
+  .feature-card p{color:var(--ink-dim);font-size:13.5px;margin:0;position:relative;z-index:1;}
+
+  .example-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;padding-top:6px;}
+  .example-card{
+    background:#fff;border:1px solid var(--border);border-radius:10px;
+    padding:12px 12px 20px;text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .example-card:nth-child(1){transform:rotate(-1.3deg);}
+  .example-card:nth-child(2){transform:rotate(0.8deg);}
+  .example-card:nth-child(3){transform:rotate(-0.6deg);}
+  .example-card:hover{transform:rotate(0deg) translateY(-6px) scale(1.02);box-shadow:0 16px 34px rgba(0,0,0,0.14);}
+  .example-card svg{width:100%;height:auto;border-radius:5px;margin-bottom:16px;display:block;}
+  .example-card h4{font-weight:700;font-size:15px;margin-bottom:6px;}
+  .example-card p{color:var(--ink-dim);font-size:13px;margin:0;}
+  .example-tag{display:inline-block;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--primary-dark);background:#EEF1FF;border:1px solid #D7DEFF;padding:4px 10px;border-radius:14px;}
+
+  .format-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .format-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px;display:flex;align-items:center;gap:16px;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .format-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,0.07);}
+  .format-ring{
+    width:58px;height:58px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;
+    border:3px solid;text-align:center;line-height:1.25;
+  }
+  .format-card:nth-child(1) .format-ring{border-color:var(--primary);color:var(--primary-dark);background:#EEF1FF;}
+  .format-card:nth-child(2) .format-ring{border-color:var(--accent);color:#C2431F;background:#FFEEE7;}
+  .format-card:nth-child(3) .format-ring{border-color:#7A5CFF;color:#5B3FD9;background:#F1EDFF;}
+  .format-card:nth-child(4) .format-ring{border-color:#14B87A;color:#0D8F5D;background:#E7F9F0;}
+  .format-card h4{font-family:'Sora',sans-serif;font-weight:700;font-size:14.5px;margin:0 0 4px;}
+  .format-card p{margin:0;color:var(--ink-dim);font-size:13px;}
+
+  .compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .compare-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;
+    padding:26px 22px;text-align:center;position:relative;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .compare-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,0.08);}
+  .compare-card.winner{border:2px solid var(--accent);}
+  .winner-badge{
+    position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;font-weight:600;padding:4px 12px;border-radius:12px;letter-spacing:0.03em;
+  }
+  .compare-ring{
+    width:76px;height:76px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 16px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14.5px;
+    border:3px solid;
+  }
+  .compare-card:nth-child(1) .compare-ring{border-color:#D7D3C4;color:var(--ink-dim);background:#F7F6F1;}
+  .compare-card:nth-child(2) .compare-ring{border-color:#B9D4FF;color:var(--primary-dark);background:#EEF1FF;}
+  .compare-card:nth-child(3) .compare-ring{border-color:var(--accent);color:#fff;background:var(--accent);}
+  .compare-card h4{font-family:'Sora',sans-serif;font-weight:700;font-size:16px;margin-bottom:16px;}
+  .compare-attr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-top:1px solid var(--border);font-size:13px;}
+  .compare-attr:first-of-type{border-top:none;}
+  .compare-attr .label{color:var(--ink-dim);}
+  .compare-attr .val{color:var(--ink);font-weight:600;}
+  .compare-attr .val.yes{color:#14B87A;}
+  .compare-attr .val.no{color:#B8B6AE;}
+  .guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .guide-card{
+    border-radius:14px;padding:24px;position:relative;overflow:hidden;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .guide-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,0.08);}
+  .guide-card.c1{background:#EEF1FF;border:1px solid #D7DEFF;}
+  .guide-card.c2{background:#FFEEE7;border:1px solid #FFD5C2;}
+  .guide-card.c3{background:#E7F9F0;border:1px solid #C7EED9;}
+  .guide-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:10px;margin-bottom:14px;
+    font-family:'Sora',sans-serif;font-weight:800;font-size:15px;color:#fff;
+  }
+  .guide-card.c1 .guide-badge{background:var(--primary);}
+  .guide-card.c2 .guide-badge{background:var(--accent);}
+  .guide-card.c3 .guide-badge{background:#14B87A;}
+  .guide-card h4{font-family:'Sora',sans-serif;font-weight:700;font-size:16.5px;margin-bottom:10px;color:var(--ink);}
+  .guide-card p{color:var(--ink-dim);font-size:13.5px;margin:0;line-height:1.6;}
+  .guide-card strong{color:var(--ink);}
+
+  .faq-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+  .faq-item{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 22px;}
+  .faq-item h4{font-weight:600;font-size:15.5px;margin-bottom:8px;color:var(--primary-dark);}
+  .faq-item p{color:var(--ink-dim);font-size:14px;margin:0;}
+
+  footer{margin-top:80px;background:var(--ink);border-top:1px solid var(--border);padding:48px 24px 32px;text-align:center;}
+  .footer-logo{font-family:'Sora',sans-serif;font-weight:700;font-size:19px;margin-bottom:14px;color:#fff;text-decoration:none;display:inline-block;}
+  .footer-logo .dot{color:var(--accent);}
+  .footer-cta{color:#B8B6AE;font-size:14px;margin-bottom:22px;}
+  .footer-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:20px;}
+  .footer-links a{color:#B8B6AE;text-decoration:none;font-size:13.5px;}
+  .footer-links a:hover{color:var(--accent);}
+  footer .copy{color:#6E6C64;font-size:12.5px;}
+
+  @media(max-width:800px){
+    .hero-grid{grid-template-columns:1fr;}
+    .heading-box{padding:26px 24px;}
+    h1{font-size:32px;}
+    header{padding:18px 24px;}
+    .steps{grid-template-columns:1fr;gap:14px;}
+    .steps::before{display:none;}
+    .step{margin:0;}
+    .feature-grid{grid-template-columns:1fr;}
+    .example-grid{grid-template-columns:1fr;}
+    .example-card{transform:none !important;}
+    .guide-grid{grid-template-columns:1fr;}
+    .compare-grid{grid-template-columns:1fr;}
+    .compare-card.winner{margin-top:12px;}
+    .format-grid{grid-template-columns:1fr;}
+    .convo-item{grid-template-columns:1fr;gap:4px;}
+    .faq-grid{grid-template-columns:1fr;}
+    .tool-box{padding:24px;}
+    .tool-pointer span{font-size:11.5px;padding:5px 12px;}
+  }
+  @media(prefers-reduced-motion:reduce){ *{transition:none!important;} }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">Convert2<span class="dot">WebP</span></a>
+  <nav><a href="index.html">Home</a></nav>
+</header>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div class="heading-box">
+      <div class="eyebrow">img → .webp, in your browser</div>
+      <h1>Shrink your images,<br>keep the <span class="hl">quality</span></h1>
+      <p class="sub">Convert JPG, PNG, or JPEG to WebP in one click. Smaller files, faster pages, zero uploads to any server.</p>
+    </div>
+    <div class="meter-card">
+      <div class="meter-top">
+        <div class="ring-wrap">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#EEEBDF" stroke-width="12"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#FF6A3D" stroke-width="12" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="65.3"/>
+          </svg>
+          <div class="ring-label"><span class="pct">80%</span><span class="txt">smaller</span></div>
+        </div>
+        <div class="meter-files">
+          <div class="mf-row"><span class="mf-dot before"></span><span class="mf-label">photo.jpg</span><span class="mf-size">2.4 MB</span></div>
+          <div class="mf-row"><span class="mf-dot after"></span><span class="mf-label">photo.webp</span><span class="mf-size">480 KB</span></div>
+        </div>
+      </div>
+      <p class="meter-note">Average size reduction across common photo conversions — same visual quality, a fraction of the weight.</p>
+    </div>
+  </div>
+</section>
+
+<section class="tool-section">
+  <div class="tool-pointer"><span>↓ Start here — drop your image below</span></div>
+  <div class="tool-box-wrap">
+    <div class="tool-box">
+      <div class="upload-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      </div>
+      <div class="dropzone" id="dropzone">
+        <p id="dzText">Drag &amp; drop an image here, or click to browse — JPG, PNG, JPEG, GIF, or BMP</p>
+        <input type="file" id="imageInput" accept=".jpg,.jpeg,.png,.gif,.bmp,.webp,image/*">
+        <button id="convertBtn" type="button">Convert to WebP</button>
+        <div id="result"></div>
+      </div>
+      <p class="trust-line">// processed locally in your browser — files are never uploaded</p>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-inner">
+    <div class="section-head"><div class="eyebrow">process</div><h2>Three steps, one output</h2></div>
+    <div class="steps">
+      <div class="step"><span class="num">01</span><h4>Upload</h4><p>Pick or drop any image from your device.</p></div>
+      <div class="step"><span class="num">02</span><h4>Convert</h4><p>One click compresses it into WebP.</p></div>
+      <div class="step"><span class="num">03</span><h4>Download</h4><p>Save the optimized file instantly.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-inner">
+    <div class="section-head"><div class="eyebrow">why this tool</div><h2>Built for speed, not sign-ups</h2></div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2B4CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <h4>No quality loss</h4>
+        <p>Compression is tuned to keep detail intact, not just shrink the file.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#FF6A3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h4>Faster page loads</h4>
+        <p>Lighter images mean quicker load times for your visitors.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#7A5CFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <h4>Runs in your browser</h4>
+        <p>Conversion happens on your device — nothing leaves your computer.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#14B87A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h4>No install required</h4>
+        <p>Works on any device with a browser, desktop or mobile.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-inner">
+    <div class="section-head"><div class="eyebrow">examples</div><h2>What kind of images can you convert</h2></div>
+    <div class="example-grid">
+      <div class="example-card">
+        <svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FFD9A8"/>
+              <stop offset="55%" stop-color="#FF9A6C"/>
+              <stop offset="100%" stop-color="#FF6A3D"/>
+            </linearGradient>
+            <linearGradient id="water1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3A4A7A"/>
+              <stop offset="100%" stop-color="#1E2B52"/>
+            </linearGradient>
+            <radialGradient id="sun1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFF6E0"/>
+              <stop offset="100%" stop-color="#FFD98A"/>
+            </radialGradient>
+          </defs>
+          <rect width="240" height="160" fill="url(#sky1)"/>
+          <circle cx="120" cy="70" r="26" fill="url(#sun1)"/>
+          <path d="M0 100 L45 65 L80 95 L120 55 L160 90 L200 68 L240 98 L240 105 L0 105 Z" fill="#7A5546" opacity="0.55"/>
+          <path d="M0 108 L35 82 L70 105 L115 75 L155 102 L195 80 L240 105 L240 108 L0 108 Z" fill="#5C3D33" opacity="0.75"/>
+          <rect y="108" width="240" height="52" fill="url(#water1)"/>
+          <path d="M0 108 L45 143 L80 113 L120 153 L160 118 L200 140 L240 110 L240 160 L0 160 Z" fill="#2C3B6B" opacity="0.5"/>
+          <circle cx="120" cy="108" r="26" fill="#FFD98A" opacity="0.35"/>
+          <ellipse cx="45" cy="42" rx="14" ry="5" fill="#fff" opacity="0.5"/>
+          <ellipse cx="70" cy="34" rx="10" ry="4" fill="#fff" opacity="0.4"/>
+        </svg>
+        <h4>Photographs</h4>
+        <p>Landscape shots, portraits, or any high-resolution photo.</p>
+        <span class="example-tag">.jpg → .webp</span>
+      </div>
+      <div class="example-card">
+        <svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bottle1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#B9C4D6"/>
+              <stop offset="35%" stop-color="#E8EDF4"/>
+              <stop offset="55%" stop-color="#F5F8FC"/>
+              <stop offset="100%" stop-color="#9AA8C2"/>
+            </linearGradient>
+            <linearGradient id="cap1" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#C98A3D"/>
+              <stop offset="50%" stop-color="#E8B368"/>
+              <stop offset="100%" stop-color="#A86D2C"/>
+            </linearGradient>
+          </defs>
+          <rect width="240" height="160" fill="#F1EFE6"/>
+          <ellipse cx="120" cy="146" rx="46" ry="8" fill="#000" opacity="0.08"/>
+          <rect x="98" y="34" width="20" height="14" rx="2" fill="url(#cap1)"/>
+          <rect x="92" y="46" width="32" height="10" rx="3" fill="#D8A15A"/>
+          <path d="M90 56 Q90 50 96 50 L124 50 Q130 50 130 56 L136 130 Q136 140 124 140 L96 140 Q84 140 84 130 Z" fill="url(#bottle1)" stroke="#C3CBDA" stroke-width="1"/>
+          <rect x="96" y="78" width="28" height="34" rx="3" fill="#FF6A3D" opacity="0.85"/>
+          <rect x="99" y="84" width="22" height="3" rx="1.5" fill="#fff" opacity="0.85"/>
+          <rect x="99" y="90" width="16" height="2.4" rx="1.2" fill="#fff" opacity="0.6"/>
+          <ellipse cx="102" cy="62" rx="4" ry="14" fill="#fff" opacity="0.5"/>
+        </svg>
+        <h4>Product photos</h4>
+        <p>Clean, transparent-background shots for online stores.</p>
+        <span class="example-tag">.png → .webp</span>
+      </div>
+      <div class="example-card">
+        <svg viewBox="0 0 240 160" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bar1" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="#2B4CFF"/>
+              <stop offset="100%" stop-color="#7A9CFF"/>
+            </linearGradient>
+          </defs>
+          <rect width="240" height="160" fill="#EDEBE1"/>
+          <rect x="14" y="14" width="212" height="132" rx="8" fill="#fff" stroke="#DEDACB" stroke-width="1.5"/>
+          <rect x="14" y="14" width="212" height="22" rx="8" fill="#F4F2E8"/>
+          <circle cx="26" cy="25" r="3.2" fill="#FF6A3D"/>
+          <circle cx="36" cy="25" r="3.2" fill="#E8C34A"/>
+          <circle cx="46" cy="25" r="3.2" fill="#4CAF7D"/>
+          <rect x="70" y="20" width="120" height="10" rx="5" fill="#E4E1D4"/>
+          <rect x="30" y="50" width="70" height="8" rx="3" fill="#15151A"/>
+          <rect x="30" y="64" width="110" height="6" rx="3" fill="#B8B6AE"/>
+          <rect x="30" y="76" width="90" height="6" rx="3" fill="#B8B6AE"/>
+          <rect x="30" y="96" width="24" height="38" rx="2" fill="url(#bar1)"/>
+          <rect x="60" y="112" width="24" height="22" rx="2" fill="url(#bar1)" opacity="0.7"/>
+          <rect x="90" y="80" width="24" height="54" rx="2" fill="url(#bar1)"/>
+          <rect x="120" y="104" width="24" height="30" rx="2" fill="url(#bar1)" opacity="0.7"/>
+          <rect x="150" y="92" width="24" height="42" rx="2" fill="url(#bar1)"/>
+        </svg>
+        <h4>Screenshots &amp; graphics</h4>
+        <p>UI screenshots, charts, or illustrations for blog posts.</p>
+        <span class="example-tag">.jpeg → .webp</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-inner">
+    <div class="section-head"><div class="eyebrow">guide</div><h2>Understanding the WebP image format</h2></div>
+    <div class="guide-grid">
+      <div class="guide-card c1">
+        <div class="guide-badge">01</div>
+        <h4>What WebP actually is</h4>
+        <p><strong>WebP</strong> is an image format developed by Google in 2010 as an alternative to JPG, PNG, and GIF. It produces files that are significantly smaller than traditional formats without a noticeable drop in visual quality — which matters because image weight is often the biggest factor slowing a page down.</p>
+      </div>
+      <div class="guide-card c2">
+        <div class="guide-badge">02</div>
+        <h4>Lossy or lossless, your choice</h4>
+        <p>Unlike PNG, which only supports lossless compression, WebP compresses either way depending on the content. Photos benefit from lossy WebP, while logos and icons benefit from lossless WebP — both come out smaller than the original format.</p>
+      </div>
+      <div class="guide-card c3">
+        <div class="guide-badge">03</div>
+        <h4>Works everywhere already</h4>
+        <p>Browser support for WebP is now near-universal — Chrome, Firefox, Edge, Safari, and Opera all render it natively. There's little practical reason to avoid it for a modern website today.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-inner">
+    <div class="section-head"><div class="eyebrow">comparison</div><h2>WebP vs JPG vs PNG</h2></div>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-ring">.jpg</div>
+        <h4>JPG</h4>
+        <div class="compare-attr"><span class="label">Compression</span><span class="val">Lossy only</span></div>
+        <div class="compare-attr"><span class="label">Transparency</span><span class="val no">No</span></div>
+        <div class="compare-attr"><span class="label">Best for</span><span class="val">Photographs</span></div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-ring">.png</div>
+        <h4>PNG</h4>
+        <div class="compare-attr"><span class="label">Compression</span><span class="val">Lossless only</span></div>
+        <div class="compare-attr"><span class="label">Transparency</span><span class="val yes">Yes</span></div>
+        <div class="compare-attr"><span class="label">Best for</span><span class="val">Logos, graphics</span></div>
+      </div>
+      <div class="compare-card winner">
+        <span class="winner-badge">Recommended</span>
+        <div class="compare-ring">.webp</div>
+        <h4>WebP</h4>
+        <div class="compare-attr"><span class="label">Compression</span><span class="val">Lossy or lossless</span></div>
+        <div class="compare-attr"><span class="label">Transparency</span><span class="val yes">Yes</span></div>
+        <div class="compare-attr"><span class="label">Best for</span><span class="val">Both, optimized</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-inner">
+    <div class="section-head"><div class="eyebrow">formats</div><h2>What you can convert</h2></div>
+    <div class="format-grid">
+      <div class="format-card">
+        <div class="format-ring">JPG<br>↓<br>WEBP</div>
+        <div><h4>JPG to WebP</h4><p>Shrink heavy photographs while keeping them crisp.</p></div>
+      </div>
+      <div class="format-card">
+        <div class="format-ring">PNG<br>↓<br>WEBP</div>
+        <div><h4>PNG to WebP</h4><p>Keep transparency intact while reducing graphic size.</p></div>
+      </div>
+      <div class="format-card">
+        <div class="format-ring">JPEG<br>↓<br>WEBP</div>
+        <div><h4>JPEG to WebP</h4><p>A quick way to modernize your photo library for the web.</p></div>
+      </div>
+      <div class="format-card">
+        <div class="format-ring">ANY<br>↓<br>WEBP</div>
+        <div><h4>Any Image to WebP</h4><p>Handles most standard image formats, not just JPG and PNG.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content-section">
+  <div class="section-inner">
+    <div class="section-head"><div class="eyebrow">questions</div><h2>Frequently asked</h2></div>
+    <div class="faq-grid">
+      <div class="faq-item"><h4>What is a WebP file and why should I use it?</h4><p>WebP is a modern image format from Google that produces smaller files than JPG or PNG while keeping visual quality high, which helps pages load faster.</p></div>
+      <div class="faq-item"><h4>Is this tool really free to use?</h4><p>Yes — no hidden charges, no sign-up, and no watermark on your converted files.</p></div>
+      <div class="faq-item"><h4>Will my image lose quality during conversion?</h4><p>The default quality setting keeps visual differences minimal for most images.</p></div>
+      <div class="faq-item"><h4>Do I need to install anything?</h4><p>No — everything runs directly inside your web browser.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="index.html" class="footer-logo">Convert2<span class="dot">WebP</span></a>
+  <p class="footer-cta">Your images, lighter and ready — jump back up and convert one now.</p>
+  <div class="footer-links">
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="disclaimer.html">Disclaimer</a>
+    <a href="terms.html">Terms and Conditions</a>
+  </div>
+  <p class="copy">© 2026 Convert2WebP. All rights reserved.</p>
+</footer>
+
+<script>
+const dropzone = document.getElementById('dropzone');
+const imageInput = document.getElementById('imageInput');
+const convertBtn = document.getElementById('convertBtn');
+const resultDiv = document.getElementById('result');
+const dzText = document.getElementById('dzText');
+
+let selectedFile = null;
+
+function formatSize(bytes){
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(2) + ' MB';
+}
+
+function showPreview(file){
+  selectedFile = file;
+  resultDiv.innerHTML = '';
+  const url = URL.createObjectURL(file);
+  dzText.innerHTML = '';
+  const row = document.createElement('div');
+  row.className = 'preview-row';
+  row.innerHTML = `
+    <img class="preview-thumb" src="${url}" alt="Selected image preview">
+    <div class="preview-info">
+      <div class="fname">${file.name}</div>
+      <div class="fsize">${formatSize(file.size)}</div>
+    </div>
+  `;
+  dzText.appendChild(row);
+}
+
+function convertImage(file){
+  if (!file){
+    resultDiv.innerHTML = '<p class="error-msg">Please select or drop an image file first.</p>';
+    return;
+  }
+
+  const canvasTest = document.createElement('canvas');
+  const supportsWebp = canvasTest.toDataURL('image/webp').indexOf('image/webp') === 5;
+  if (!supportsWebp){
+    resultDiv.innerHTML = '<p class="error-msg">Your browser does not support WebP export. Please try the latest Chrome, Firefox, or Edge.</p>';
+    return;
+  }
+
+  convertBtn.disabled = true;
+  convertBtn.textContent = 'Converting...';
+  resultDiv.innerHTML = '<p class="trust-line" style="margin-top:0;">Converting your image…</p>';
+
+  const reader = new FileReader();
+  reader.onload = function(event){
+    const img = new Image();
+    img.onload = function(){
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const webpDataUrl = canvas.toDataURL('image/webp', 0.8);
+
+        const approxBytes = Math.round((webpDataUrl.length - 'data:image/webp;base64,'.length) * 0.75);
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = webpDataUrl;
+        const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        downloadLink.download = originalName + '.webp';
+        downloadLink.textContent = 'Download WebP Image';
+        downloadLink.className = 'download-btn';
+
+        resultDiv.innerHTML = '';
+        const row = document.createElement('div');
+        row.className = 'result-row';
+        row.appendChild(downloadLink);
+        const sizeInfo = document.createElement('span');
+        sizeInfo.className = 'size-compare';
+        sizeInfo.innerHTML = formatSize(file.size) + ' → <span class="new-size">' + formatSize(approxBytes) + '</span>';
+        row.appendChild(sizeInfo);
+        resultDiv.appendChild(row);
+      } catch (err){
+        resultDiv.innerHTML = '<p class="error-msg">Conversion failed. Please try a different image.</p>';
+      } finally {
+        convertBtn.disabled = false;
+        convertBtn.textContent = 'Convert to WebP';
+      }
+    };
+    img.onerror = function(){
+      resultDiv.innerHTML = '<p class="error-msg">Could not load this image. Please try a different file.</p>';
+      convertBtn.disabled = false;
+      convertBtn.textContent = 'Convert to WebP';
+    };
+    img.src = event.target.result;
+  };
+  reader.onerror = function(){
+    resultDiv.innerHTML = '<p class="error-msg">Could not read this file. Please try again.</p>';
+    convertBtn.disabled = false;
+    convertBtn.textContent = 'Convert to WebP';
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleFile(file){
+  if (!file){ return; }
+  if (!file.type.startsWith('image/')){
+    resultDiv.innerHTML = '<p class="error-msg">Please choose a valid image file (JPG, PNG, JPEG, GIF, or BMP).</p>';
+    selectedFile = null;
+    return;
+  }
+  showPreview(file);
+  convertImage(file);
+}
+
+dropzone.addEventListener('click', (e) => {
+  if (e.target === convertBtn) return;
+  imageInput.click();
+});
+
+imageInput.addEventListener('click', (e) => e.stopPropagation());
+
+imageInput.addEventListener('change', () => {
+  if (imageInput.files && imageInput.files[0]){
+    handleFile(imageInput.files[0]);
+  }
+});
+
+['dragenter','dragover'].forEach(evt => {
+  dropzone.addEventListener(evt, (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropzone.classList.add('dragover');
+  });
+});
+
+['dragleave','dragend'].forEach(evt => {
+  dropzone.addEventListener(evt, (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropzone.classList.remove('dragover');
+  });
+});
+
+dropzone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  dropzone.classList.remove('dragover');
+  const files = e.dataTransfer.files;
+  if (files && files.length > 0){
+    imageInput.files = files;
+    handleFile(files[0]);
+  }
+});
+
+convertBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  convertImage(selectedFile);
+});
+</script>
+</body>
+</html>
