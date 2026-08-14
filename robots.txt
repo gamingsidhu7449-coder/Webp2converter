@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gamingsidhu7449-coder.github.io/Webp2converter/sitemap.xml
